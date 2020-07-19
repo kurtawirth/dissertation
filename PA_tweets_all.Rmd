@@ -1,0 +1,42 @@
+---
+title: "PA_tweets_all"
+output: html_document
+---
+
+Load libraries
+
+```{r}
+library(tidyverse)
+library(rjson)
+library(iconv)
+```
+
+Set working directory
+
+```{r}
+setwd("D:/Users/Kurt/Documents/Research/Dissertation/Data/tweets")
+```
+
+List all files needing to be combined
+
+```{r}
+files = dir(getwd(), all.files = FALSE, full.names = TRUE, recursive = TRUE)
+files = files[-91]
+```
+
+?
+
+```{r}
+jsonl = lapply(files, function(f) fromJSON(file = f))
+jsonl_df = jsonl %>% as.data.frame()
+jsonUTF = jsonl %>%
+    mutate_all(~gsub('[^ -~]', '', .))
+jsonc = toJSON(jsonl)
+write(jsonl, file = "tweets_all")
+```
+
+Remove repeated data
+
+```{r}
+files = files[-1]
+```

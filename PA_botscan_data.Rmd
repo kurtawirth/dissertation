@@ -1,0 +1,64 @@
+---
+title: "PA_botscan_data"
+output: html_document
+---
+
+Load tidyverse
+
+```{r}
+library(tidyverse)
+```
+
+Set working directory
+
+```{r}
+setwd("D:/Users/Kurt/Documents/Research/Dissertation/Data/botscan")
+```
+
+List all files needing to be combined
+
+```{r}
+files <- dir(getwd(), all.files = FALSE, full.names = TRUE, recursive = TRUE)
+```
+
+Create initial dataframe
+
+```{r}
+load(files[1])
+botscan_data = diss_botscan_results_economy_011520
+rm(diss_botscan_results_economy_011520)
+```
+
+Remove repeated data
+
+```{r}
+files = files[-1]
+```
+
+Create function
+
+```{r}
+loadRData <- function(fileName){
+#loads an RData file, and returns it
+    load(fileName)
+    get(ls()[ls() != "fileName"])
+}
+```
+
+
+Create remaining dataframe
+
+```{r}
+for(file in files){
+  current_file = loadRData(file)
+  botscan_data = dplyr::bind_rows(botscan_data, current_file)
+  rm(file)
+}
+```
+
+Write file
+
+```{r}
+save(botscan_data, file = "D:/Users/Kurt/Documents/Research/Dissertation/Data/botscan/botscan_data.RData")
+```
+
