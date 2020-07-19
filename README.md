@@ -1,1 +1,1 @@
-dissertation
+github_dissertation
